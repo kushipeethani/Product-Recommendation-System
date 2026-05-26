@@ -1,0 +1,289 @@
+:root {
+  color: #17211a;
+  background: #f6f7f2;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0 56px;
+}
+
+.intro {
+  min-height: 230px;
+  display: flex;
+  align-items: end;
+  padding: 32px;
+  color: #ffffff;
+  background:
+    linear-gradient(90deg, rgba(8, 26, 22, 0.92), rgba(8, 26, 22, 0.4)),
+    url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80")
+      center/cover;
+  border-radius: 8px;
+}
+
+.intro h1 {
+  max-width: 740px;
+  margin: 8px 0 12px;
+  font-size: clamp(2.4rem, 8vw, 4.6rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.intro p {
+  max-width: 640px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 1.08rem;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #3c7a5d;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.intro .eyebrow {
+  color: #a8f0ce;
+}
+
+.workspace {
+  margin: 24px 0 40px;
+}
+
+.request-panel {
+  padding: 22px;
+  border: 1px solid #d8ddd1;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.request-panel {
+  display: grid;
+  gap: 12px;
+}
+
+label,
+.section-heading h2 {
+  color: #17211a;
+}
+
+label {
+  font-weight: 800;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 118px;
+  border: 1px solid #bcc7b7;
+  border-radius: 6px;
+  padding: 14px;
+  color: #17211a;
+  background: #fbfcf8;
+}
+
+textarea:focus {
+  outline: 3px solid rgba(60, 122, 93, 0.2);
+  border-color: #3c7a5d;
+}
+
+button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 6px;
+  color: #ffffff;
+  background: #1d5f49;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.muted,
+.summary,
+.product-card p {
+  color: #566256;
+}
+
+.summary {
+  margin: 8px 0 0;
+}
+
+.source-label {
+  display: inline-flex;
+  margin-top: 12px;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.source-label.groq {
+  color: #ffffff;
+  background: #1d5f49;
+}
+
+.source-label.local {
+  color: #5a3b00;
+  background: #ffe4a3;
+}
+
+.error {
+  margin: 0;
+  color: #b3261e;
+  font-weight: 700;
+}
+
+.section-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.result-meta {
+  max-width: 620px;
+  text-align: right;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #d8ddd1;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.product-card.recommended {
+  border-color: #1d5f49;
+  box-shadow: 0 12px 30px rgba(29, 95, 73, 0.14);
+}
+
+.card-topline,
+.product-meta,
+.tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-topline,
+.product-meta {
+  justify-content: space-between;
+}
+
+.category,
+.match-label,
+.tags span {
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.category {
+  color: #225341;
+  background: #dff1e5;
+}
+
+.match-label {
+  color: #ffffff;
+  background: #1d5f49;
+}
+
+.product-card h3 {
+  margin: 14px 0 8px;
+  font-size: 1.12rem;
+}
+
+.product-card p {
+  margin: 0;
+}
+
+.pick-reason {
+  margin-top: 12px !important;
+  border-left: 4px solid #1d5f49;
+  padding-left: 10px;
+  color: #225341 !important;
+  font-weight: 700;
+}
+
+.product-meta {
+  color: #17211a;
+  font-weight: 900;
+}
+
+.tags span {
+  color: #374138;
+  background: #eef0ea;
+}
+
+@media (max-width: 980px) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .section-heading {
+    display: block;
+  }
+
+  .result-meta {
+    margin-top: 12px;
+    text-align: left;
+  }
+}
+
+@media (max-width: 680px) {
+  .app-shell {
+    width: min(100% - 20px, 1180px);
+    padding-top: 20px;
+  }
+
+  .intro {
+    min-height: 300px;
+    padding: 22px;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
