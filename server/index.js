@@ -661,46 +661,44 @@ app.post("/api/recommend", async (req, res) => {
   }
 
   try {
-    const aiResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: groqModel,
-        messages: [
-          {
-            role: "system",
-            content: GROQ_SYSTEM_PROMPT,
-          },
-          {
-            role: "user",
-            content: JSON.stringify({
-              preference,
-              catalog: products.map((p) => ({
-                id: p.id,
-                name: p.name,
-                brand: p.brand,
-                category: p.category,
-                price: p.price,
-                rating: p.rating,
-                reviews: p.reviews,
-                discount: p.discount,
-                availability: p.availability,
-                popularity: p.popularity,
-                tags: p.tags,
-                features: p.features,
-                color: p.color,
-                description: p.description,
-              })),
-            }),
-          },
-        ],
-        response_format: { type: "json_object" },
-        temperature: 0.2,
-      }),
-    });
+    // Pre-filter catalog to reduce tokens sent to Groq
+    const filteredCatalog = filterProducts(products, query);
+    const catalogForAI = (filteredCatalog.length > 0 ? filteredCatalog : products)
+      .map((p) => `${p.id}|${p.name}|${p.category}|$${p.price}|${p.rating}★|${p.tags.slice(0, 3).join(",")}`);
+
+    const sendToGroq = async () => {
+      return fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: groqModel,
+          messages: [
+            {
+              role: "system",
+              content: GROQ_SYSTEM_PROMPT,
+            },
+            {
+              role: "user",
+              content: `Preference: ${preference}\nProducts (id|name|category|price|rating|tags):\n${catalogForAI.join("\n")}`,
+            },
+          ],
+          response_format: { type: "json_object" },
+          temperature: 0.2,
+        }),
+      });
+    };
+
+    let aiResponse = await sendToGroq();
+
+    // Retry once after short delay on 429
+    if (aiResponse.status === 429) {
+      const retryAfter = parseFloat(aiResponse.headers.get("retry-after")) || 1;
+      await new Promise((r) => setTimeout(r, retryAfter * 1000 + 200));
+      aiResponse = await sendToGroq();
+    }
 
     const payload = await aiResponse.json();
 
