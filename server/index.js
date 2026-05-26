@@ -502,14 +502,22 @@ function buildLocalRecommendations(preference, note) {
     const relaxedQuery = { ...query, brand: null };
     filtered = filterProducts(products, relaxedQuery);
 
-    // Still nothing? Relax price too
+    // Still nothing? Relax price but keep category, sort by price proximity
     if (filtered.length === 0) {
       const moreRelaxed = { ...relaxedQuery, priceMin: null, priceMax: null };
       filtered = filterProducts(products, moreRelaxed);
+
+      // Sort by price proximity to the original budget
+      const targetPrice = query.priceMax || query.priceMin || 0;
+      if (targetPrice > 0) {
+        filtered.sort((a, b) => Math.abs(a.price - targetPrice) - Math.abs(b.price - targetPrice));
+      }
     }
   }
 
-  const ranked = rankProducts(filtered, query);
+  const ranked = isAlternative && (query.priceMax || query.priceMin)
+    ? filtered.map((p) => ({ product: p, score: 0 }))  // already sorted by price proximity
+    : rankProducts(filtered, query);
 
   // Min 3, max 10
   const count = Math.max(3, Math.min(10, ranked.length));
@@ -549,7 +557,7 @@ function buildLocalRecommendations(preference, note) {
       discount: product.discount > 0 ? `${product.discount}%` : "0%",
       availability: product.availability,
       reason: isAlternative
-        ? `No exact match found. Closest alternative: ${generateReason(product, query)}`
+        ? `No exact match in your price range. Closest to your budget at $${product.price} — ${product.rating}/5 rating.${product.discount > 0 ? ` ${product.discount}% off.` : ""}`
         : generateReason(product, query),
     })),
     summary: note || "Recommended using the local catalog matcher.",
