@@ -1,15 +1,24 @@
 import dotenv from "dotenv";
 import express from "express";
+import { fileURLToPath } from "url";
+import path from "path";
 import { products } from "../src/products.js";
 
 dotenv.config();
 dotenv.config({ path: "src/.env", override: false });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 3001;
 const groqModel = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
 
 app.use(express.json());
+
+// Serve built frontend in production
+const distPath = path.join(__dirname, "..", "dist");
+app.use(express.static(distPath));
 
 // ========================
 // SYNONYM MAP — Fuzzy Match
@@ -792,6 +801,11 @@ app.post("/api/recommend", async (req, res) => {
       ),
     );
   }
+});
+
+// SPA fallback — serve index.html for any non-API route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
 });
 
 app.listen(port, () => {
